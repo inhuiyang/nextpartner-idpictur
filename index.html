@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 증명사진 — 넥스트파트너</title>
+
+  <!-- Pretendard 폰트 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { 500: '#ff7f65', 400: '#ff9a7a', 300: '#ffb89f', 100: '#ffe3dc', 50: '#fff4f1' },
+            neutral: { 900: '#1a1a1a', 800: '#333333', 600: '#666666', 400: '#999999', 200: '#e5e5e5', 100: '#f0f0f0', 50: '#f5f5f5', 0: '#ffffff' },
+            'warm-grey': { 300: '#e5d1c9', 200: '#ecded9', 100: '#f5edeb', 50: '#f8f4f3', 25: '#fbf9f9' },
+            success: { 500: '#4caf50', 100: '#e8f5e9' },
+            warning: { 500: '#ff9800', 100: '#fff3e0' },
+            error:   { 500: '#f44336', 100: '#ffebee' },
+            info:    { 500: '#2196f3', 100: '#e3f2fd' },
+          },
+          spacing: {
+            1:'4px', 2:'8px', 3:'12px', 4:'16px', 5:'20px',
+            6:'24px', 8:'32px', 10:'40px', 12:'48px', 16:'64px',
+          },
+          borderRadius: { button:'8px', card:'8px', search:'24px', badge:'4px', pill:'999px' },
+          fontFamily: {
+            base: ['Pretendard Variable','Pretendard','-apple-system','BlinkMacSystemFont','Apple SD Gothic Neo','sans-serif'],
+          },
+          maxWidth: { content: '1212px' },
+        },
+      },
+    }
+  </script>
+
+  <!-- Lucide 아이콘 -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <!-- np- 컴포넌트 클래스 (디자인 시스템 그대로) -->
+  <style type="text/tailwindcss">
+    @layer base {
+      *, *::before, *::after { box-sizing: border-box; }
+      body { @apply font-base text-neutral-900 bg-neutral-50; }
+    }
+    @layer components {
+      .np-btn {
+        @apply inline-flex items-center justify-center gap-2 font-base font-bold
+               rounded-button border border-transparent cursor-pointer
+               transition-all duration-[120ms] ease-out whitespace-nowrap relative select-none;
+      }
+      .np-btn:focus-visible { @apply outline-none shadow-[0_0_0_3px_rgba(255,184,159,0.35)]; }
+      .np-btn:disabled { @apply opacity-40 cursor-not-allowed pointer-events-none; }
+      .np-btn-sm  { @apply h-10 px-4 text-lg; }
+      .np-btn-md  { @apply h-12 px-5 text-xl; }
+      .np-btn-lg  { @apply h-14 px-6 text-2xl; }
+      .np-btn-primary    { @apply bg-primary-500 text-neutral-0 hover:bg-primary-400 active:bg-primary-300; }
+      .np-btn-secondary  { @apply bg-neutral-0 text-primary-500 border-primary-500 hover:bg-primary-50 active:bg-primary-100; }
+      .np-btn-ghost      { @apply bg-transparent text-primary-500 hover:bg-primary-50 active:bg-primary-100; }
+      .np-btn-grey       { @apply bg-neutral-100 text-neutral-400 hover:bg-neutral-200 active:bg-neutral-200; }
+      .np-btn-grey-stroke { @apply bg-neutral-0 text-neutral-800 border border-neutral-200 hover:bg-neutral-50 active:bg-neutral-100; }
+
+      .np-btn-icon {
+        @apply inline-flex items-center justify-center rounded-button border border-solid
+               border-transparent cursor-pointer transition-all duration-[120ms] ease-out select-none;
+      }
+      .np-btn-icon:focus-visible { @apply outline-none shadow-[0_0_0_3px_rgba(255,184,159,0.35)]; }
+      .np-btn-icon:disabled { @apply opacity-40 cursor-not-allowed pointer-events-none; }
+      .np-btn-icon-sm { @apply w-10 h-10; }
+      .np-btn-icon-md { @apply w-12 h-12; }
+      .np-btn-icon-lg { @apply w-14 h-14; }
+      .np-btn-icon-primary      { @apply bg-primary-500 text-neutral-0 hover:bg-primary-400 active:bg-primary-300; }
+      .np-btn-icon-secondary    { @apply bg-neutral-0 text-primary-500 border-primary-500 hover:bg-primary-50 active:bg-primary-100; }
+      .np-btn-icon-ghost        { @apply bg-transparent text-primary-500 hover:bg-primary-50 active:bg-primary-100; }
+      .np-btn-icon-grey         { @apply bg-neutral-100 text-neutral-800 hover:bg-neutral-200 active:bg-neutral-200; }
+      .np-btn-icon-grey-stroke  { @apply bg-neutral-0 text-neutral-800 border-neutral-200 hover:bg-neutral-50 active:bg-neutral-100; }
+
+      .np-textarea {
+        @apply w-full px-4 py-3 font-base text-xl text-neutral-900
+               bg-neutral-0 border border-neutral-200 rounded-button
+               outline-none transition-all duration-[120ms] ease-out
+               placeholder:text-neutral-400 resize-y leading-relaxed;
+        min-height: 120px;
+      }
+      .np-textarea:focus { @apply border-primary-500 shadow-[0_0_0_3px_rgba(255,184,159,0.25)]; }
+      .np-textarea:disabled { @apply bg-neutral-50 text-neutral-400 cursor-not-allowed resize-none; }
+
+      .np-badge {
+        @apply inline-flex items-center justify-center px-3 h-7 font-base text-base font-semibold rounded-badge;
+      }
+      .np-badge-primary  { @apply bg-primary-500 text-neutral-0; }
+      .np-badge-neutral  { @apply bg-neutral-200 text-neutral-800; }
+      .np-badge-success  { @apply bg-success-100 text-success-500; }
+      .np-badge-warning  { @apply bg-warning-100 text-warning-500; }
+      .np-badge-error    { @apply bg-error-100 text-error-500; }
+      .np-badge-info     { @apply bg-info-100 text-info-500; }
+      .np-badge-gradient { @apply text-neutral-0; background: linear-gradient(135deg,#FFAA00 0%,#FF2D9E 33%,#80BFFF 66%,#67E8D8 100%); }
+
+      .np-header { @apply w-full bg-neutral-0 border-b border-neutral-200; }
+      .np-header-inner {
+        @apply max-w-content mx-auto px-4 md:px-6 flex items-center h-16 md:h-20 gap-4 md:gap-8;
+      }
+      .np-header-nav { @apply hidden md:flex items-center gap-1 ml-auto; }
+      .np-header-actions { @apply hidden md:flex items-center gap-2 ml-4; }
+      .np-nav-link {
+        @apply px-3 py-2 text-xl text-neutral-500 font-medium rounded-button cursor-pointer
+               hover:text-neutral-900 hover:bg-neutral-50 transition-colors duration-[120ms] ease-out;
+      }
+      .np-nav-link.active { @apply text-primary-500 bg-primary-50; }
+
+      .np-bottom-nav {
+        @apply w-full bg-neutral-0 border-t border-neutral-200 flex items-stretch;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      .np-bottom-nav-item {
+        @apply flex-1 flex flex-col items-center justify-center gap-1 py-2
+               text-neutral-400 cursor-pointer border-none bg-transparent
+               transition-colors duration-[120ms] ease-out;
+      }
+      .np-bottom-nav-item.active { @apply text-primary-500; }
+      .np-bottom-nav-item:hover  { @apply text-neutral-600; }
+      .np-bottom-nav-label { @apply text-xs font-medium; }
+
+      .np-toast {
+        @apply inline-flex items-center gap-3 px-4 py-3 bg-neutral-900 text-neutral-0
+               text-base font-medium rounded-pill pointer-events-auto;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+      }
+      .np-toast-close { @apply ml-1 shrink-0 flex items-center text-neutral-400 cursor-pointer; }
+      .np-toast-wrap {
+        position: fixed;
+        bottom: 32px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: center;
+        gap: 8px;
+        z-index: 9999;
+        pointer-events: none;
+      }
+
+      .np-spinner {
+        @apply inline-block rounded-full border-2 border-neutral-200 animate-spin;
+        border-top-color: #ff7f65;
+      }
+      .np-spinner-md { @apply w-8 h-8; border-width: 3px; }
+
+      .np-chip {
+        @apply inline-flex items-center gap-2 px-4 h-10 font-base text-base font-semibold
+               rounded-pill border border-neutral-200 bg-neutral-0 text-neutral-600
+               cursor-pointer transition-all duration-[120ms] ease-out whitespace-nowrap
+               hover:bg-neutral-50 hover:text-neutral-800 active:bg-neutral-100;
+      }
+      .np-chip-active {
+        @apply bg-primary-50 border-primary-500 text-primary-500 hover:bg-primary-100;
+      }
+    }
+  </style>
+
+  <style>
+    html, body { height: 100%; overflow: hidden; }
+    body { display: flex; flex-direction: column; }
+
+    #chat-messages::-webkit-scrollbar { width: 6px; }
+    #chat-messages::-webkit-scrollbar-track { background: transparent; }
+    #chat-messages::-webkit-scrollbar-thumb { background: #e5e5e5; border-radius: 999px; }
+    #chat-messages { scrollbar-width: thin; scrollbar-color: #e5e5e5 transparent; }
+
+    @keyframes msg-in {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .msg-in { animation: msg-in 0.22s ease-out; }
+
+    .td {
+      display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+      background: #999; animation: td-bounce 1.2s ease-in-out infinite;
+    }
+    .td:nth-child(2) { animation-delay: 0.2s; }
+    .td:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes td-bounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40%            { transform: translateY(-6px); }
+    }
+
+    #user-input { min-height: 56px !important; max-height: 140px; resize: none; }
+
+    .np-toast-wrap { bottom: 80px; }
+    @media (min-width: 768px) { .np-toast-wrap { bottom: 32px; } }
+
+    @keyframes progress-fill {
+      from { width: 5%; }
+      to   { width: 100%; }
+    }
+    .progress-fill { animation: progress-fill 3.2s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+
+    #upload-btn.has-photo { background-color: #fff4f1; border-color: #ff7f65; color: #ff7f65; }
+
+    .tool-nav-scroll::-webkit-scrollbar { display: none; }
+    .tool-nav-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .id-photo-frame {
+      background: #f0f0f0; padding: 16px; border-radius: 8px;
+      display: inline-flex; flex-direction: column; align-items: center; gap: 8px;
+    }
+    .id-photo-frame .photo-print {
+      background: white; padding: 4px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    }
+
+    /* 퍼스널 컬러 배지 배경 */
+    .pc-spring  { background: linear-gradient(135deg, #ff9c6e22, #ffd19a22); border-color: #ff9c6e44; }
+    .pc-summer  { background: linear-gradient(135deg, #6eb5d422, #a8d8ea22); border-color: #6eb5d444; }
+    .pc-autumn  { background: linear-gradient(135deg, #c17f3e22, #d4a96022); border-color: #c17f3e44; }
+    .pc-winter  { background: linear-gradient(135deg, #4a6fa022, #7b9fc022); border-color: #4a6fa044; }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── 헤더 (디자인 시스템 코드 그대로) ── -->
+  <header class="np-header sticky top-0 z-50">
+
+    <!-- Mobile — Logged In -->
+    <div class="px-4 flex items-center h-14 gap-3 md:hidden">
+      <a href="#" class="flex items-center gap-2 shrink-0">
+        <img src="img/symbol.png" width="28" height="28" alt="NextPartner" />
+        <span class="text-lg font-bold text-neutral-900 tracking-tight">NextPartner</span>
+      </a>
+      <span class="np-badge np-badge-warning">구직자</span>
+      <div class="ml-auto flex items-center gap-2">
+        <div class="w-8 h-8 rounded-full bg-primary-100 overflow-hidden shrink-0">
+          <img src="https://i.pravatar.cc/32?img=12" alt="프로필" class="w-full h-full object-cover" />
+        </div>
+        <span class="text-sm text-neutral-600">홍길동님</span>
+        <button class="flex items-center justify-center w-10 h-10 text-neutral-400 rounded-button hover:bg-neutral-50 hover:text-neutral-800 transition-colors" aria-label="로그아웃">
+          <i data-lucide="log-out" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Desktop — Logged In -->
+    <div class="np-header-inner hidden md:flex">
+      <div class="flex items-center gap-2 shrink-0">
+        <a href="#" class="flex items-center gap-2">
+          <img src="img/symbol.png" width="32" height="32" alt="NextPartner" />
+          <span class="text-2xl font-bold text-neutral-900 tracking-tight">NextPartner</span>
+        </a>
+        <span class="np-badge np-badge-warning">구직자</span>
+      </div>
+      <nav class="np-header-nav">
+        <button class="np-btn np-btn-primary np-btn-md">이력서·자기소개서</button>
+        <button class="np-btn np-btn-primary np-btn-md">인재풀 등록</button>
+        <a class="np-nav-link">일자리</a>
+        <a class="np-nav-link">프로젝트</a>
+        <a class="np-nav-link">박람회</a>
+      </nav>
+      <div class="np-header-actions">
+        <div class="flex items-center gap-2">
+          <span class="text-base text-neutral-600">홍길동님</span>
+        </div>
+        <button class="flex items-center justify-center w-10 h-10 text-neutral-400 rounded-button hover:bg-neutral-50 hover:text-neutral-800 transition-colors" aria-label="로그아웃">
+          <i data-lucide="log-out" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── AI 도구 빠른 이동 ── -->
+  <div class="bg-neutral-0 border-b border-neutral-200" style="flex-shrink:0;">
+    <div class="tool-nav-scroll overflow-x-auto">
+      <div class="flex items-center gap-2 px-4 md:px-6 py-3 w-max md:w-auto md:max-w-content md:mx-auto">
+        <button class="np-chip">
+          <i data-lucide="mic" class="w-4 h-4 shrink-0"></i>
+          AI 모의 면접
+        </button>
+        <button class="np-chip">
+          <i data-lucide="pencil-line" class="w-4 h-4 shrink-0"></i>
+          AI 자기소개
+        </button>
+        <button class="np-chip">
+          <i data-lucide="building-2" class="w-4 h-4 shrink-0"></i>
+          AI 기업 브리핑
+        </button>
+        <button class="np-chip np-chip-active" aria-current="page">
+          <i data-lucide="camera" class="w-4 h-4 shrink-0"></i>
+          AI 증명사진
+        </button>
+        <button class="np-chip">
+          <i data-lucide="shirt" class="w-4 h-4 shrink-0"></i>
+          AI 복장 점검
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 채팅 레이아웃 ── -->
+  <div id="chat-layout" style="flex:1; overflow:hidden; display:flex; flex-direction:column;">
+
+    <!-- 메시지 영역 -->
+    <div id="chat-messages" class="bg-neutral-50" style="flex:1; overflow-y:auto;">
+      <div id="msg-list" class="w-full max-w-2xl mx-auto px-4 md:px-6 py-6 flex flex-col gap-5"></div>
+    </div>
+
+    <!-- 입력 바 -->
+    <div id="input-bar" class="bg-neutral-0 border-t border-neutral-200" style="flex-shrink:0;">
+      <div class="w-full max-w-2xl mx-auto px-4 md:px-6 py-3 pb-[76px] md:pb-3">
+        <div class="flex items-end gap-2">
+
+          <!-- 사진 업로드 버튼 -->
+          <label for="photo-input" id="upload-btn"
+            class="np-btn-icon np-btn-icon-lg np-btn-icon-grey-stroke"
+            style="cursor:pointer; flex-shrink:0; border-width:1px;"
+            title="사진 업로드">
+            <i data-lucide="camera" class="w-6 h-6"></i>
+          </label>
+          <input type="file" id="photo-input" accept="image/*" style="display:none;" />
+
+          <!-- 텍스트 입력 -->
+          <textarea
+            id="user-input"
+            class="np-textarea flex-1"
+            placeholder="사진을 올리거나 메시지를 입력하세요..."
+            rows="1"
+          ></textarea>
+
+          <!-- 전송 버튼 -->
+          <button id="send-btn" class="np-btn-icon np-btn-icon-lg np-btn-icon-primary" style="flex-shrink:0;" disabled>
+            <i data-lucide="send" class="w-5 h-5"></i>
+          </button>
+        </div>
+        <p class="text-sm text-neutral-400 mt-2 text-center leading-relaxed">
+          AI가 퍼스널 컬러를 분석해 최적의 증명사진 배경을 추천해 드려요
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 하단 내비게이션 (디자인 시스템 코드 그대로 + camera 아이콘) ── -->
+  <nav class="np-bottom-nav md:hidden fixed bottom-0 left-0 right-0 z-50">
+    <div class="np-bottom-nav-item">
+      <i data-lucide="home" class="w-6 h-6"></i>
+      <span class="np-bottom-nav-label">홈</span>
+    </div>
+    <div class="np-bottom-nav-item">
+      <i data-lucide="briefcase" class="w-6 h-6"></i>
+      <span class="np-bottom-nav-label">일자리</span>
+    </div>
+    <div class="np-bottom-nav-item active">
+      <i data-lucide="camera" class="w-6 h-6"></i>
+      <span class="np-bottom-nav-label">AI 증명사진</span>
+    </div>
+    <div class="np-bottom-nav-item">
+      <i data-lucide="circle-user" class="w-6 h-6"></i>
+      <span class="np-bottom-nav-label">내 계정</span>
+    </div>
+  </nav>
+
+  <!-- ── 토스트 ── -->
+  <div class="np-toast-wrap" id="toast-wrap"></div>
+
+
+  <script>
+    /* ================================================================
+       상태
+    ================================================================ */
+    let chatState    = 'init';  // init | waiting_photo | analyzing | pc_result | outfit_select | generating | done
+    let photoDataUrl = null;
+    let pcResult     = null;    // 퍼스널 컬러 분석 결과
+    let selectedBg   = null;
+    let selectedOutfit = 'auto'; // auto | women | men
+    let generatedUrl = null;
+    let cardSeq      = 0;       // 퍼스널 컬러 카드 고유 ID용
+
+    /* ================================================================
+       퍼스널 컬러 데이터
+    ================================================================ */
+    const PC_DATA = {
+      spring: {
+        season: '봄 웜톤', emoji: '🌸', type: 'spring',
+        color: '#ff9c6e', textColor: '#b85c28',
+        description: '밝고 따뜻한 피부톤으로, 생기 있고 화사한 느낌이 특징이에요.',
+        tip: '아이보리나 따뜻한 흰색 배경이 봄 웜톤의 화사함을 가장 잘 살려줘요.',
+        recommend: [
+          { id: 'ivory', label: '아이보리',  value: '#faf7f0', hasBorder: true  },
+          { id: 'white', label: '흰색',       value: '#ffffff', hasBorder: true  },
+        ],
+      },
+      summer: {
+        season: '여름 쿨톤', emoji: '🌊', type: 'summer',
+        color: '#6eb5d4', textColor: '#1a6b8a',
+        description: '밝고 시원한 피부톤으로, 부드럽고 우아한 느낌이 특징이에요.',
+        tip: '하늘색 배경이 여름 쿨톤의 청량한 매력을 극대화해요.',
+        recommend: [
+          { id: 'skyblue', label: '하늘색',        value: '#b8cfe8', hasBorder: false },
+          { id: 'white',   label: '흰색',           value: '#ffffff', hasBorder: true  },
+        ],
+      },
+      autumn: {
+        season: '가을 웜톤', emoji: '🍂', type: 'autumn',
+        color: '#c17f3e', textColor: '#7a4e1e',
+        description: '깊고 따뜻한 피부톤으로, 성숙하고 차분한 매력이 특징이에요.',
+        tip: '아이보리나 따뜻한 베이지 계열 배경이 가을 웜톤의 깊이를 돋보이게 해요.',
+        recommend: [
+          { id: 'ivory', label: '아이보리',  value: '#faf7f0', hasBorder: true },
+          { id: 'white', label: '흰색',       value: '#ffffff', hasBorder: true },
+        ],
+      },
+      winter: {
+        season: '겨울 쿨톤', emoji: '❄️', type: 'winter',
+        color: '#4a6fa0', textColor: '#1e3d66',
+        description: '선명하고 시원한 피부톤으로, 강렬하고 도회적인 느낌이 특징이에요.',
+        tip: '흰색 배경이 겨울 쿨톤의 선명하고 깔끔한 이미지를 가장 잘 표현해요.',
+        recommend: [
+          { id: 'white',     label: '흰색',           value: '#ffffff', hasBorder: true  },
+          { id: 'lightblue', label: '연한 파란색',   value: '#d6eaf8', hasBorder: false },
+        ],
+      },
+    };
+
+    const ALL_BG_OPTIONS = [
+      { id: 'white',     label: '흰색',        value: '#ffffff', hasBorder: true  },
+      { id: 'ivory',     label: '아이보리',    value: '#faf7f0', hasBorder: true  },
+      { id: 'skyblue',   label: '하늘색',      value: '#b8cfe8', hasBorder: false },
+      { id: 'lightblue', label: '연한 파란색', value: '#d6eaf8', hasBorder: false },
+      { id: 'grey',      label: '연회색',      value: '#f0f0f0', hasBorder: true  },
+    ];
+
+    function getBgById(id) {
+      return ALL_BG_OPTIONS.find(b => b.id === id) || ALL_BG_OPTIONS[0];
+    }
+
+    /* ================================================================
+       DOM 참조
+    ================================================================ */
+    const msgList    = document.getElementById('msg-list');
+    const chatMsgs   = document.getElementById('chat-messages');
+    const userInput  = document.getElementById('user-input');
+    const sendBtn    = document.getElementById('send-btn');
+    const photoInput = document.getElementById('photo-input');
+    const uploadBtn  = document.getElementById('upload-btn');
+    const toastWrap  = document.getElementById('toast-wrap');
+
+    /* ================================================================
+       유틸리티
+    ================================================================ */
+    function scrollToBottom() {
+      setTimeout(() => { chatMsgs.scrollTop = chatMsgs.scrollHeight; }, 60);
+    }
+    function escHtml(str) {
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function showToast(msg, duration = 4000) {
+      const el = document.createElement('div');
+      el.className = 'np-toast';
+      el.innerHTML = `<span>${escHtml(msg)}</span>
+        <button class="np-toast-close" onclick="this.parentElement.remove()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>`;
+      toastWrap.appendChild(el);
+      setTimeout(() => el.remove(), duration);
+    }
+
+    /* ================================================================
+       AI 아바타
+    ================================================================ */
+    const AI_AVATAR = `
+      <div class="w-10 h-10 rounded-full bg-primary-500 flex items-center justify-center shrink-0 mt-1">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+          <circle cx="12" cy="13" r="4"/>
+        </svg>
+      </div>`;
+
+    /* ================================================================
+       메시지 렌더링
+    ================================================================ */
+    function addAI(html) {
+      const div = document.createElement('div');
+      div.className = 'flex items-start gap-3 msg-in';
+      div.innerHTML = `${AI_AVATAR}
+        <div class="flex-1 min-w-0">
+          <div style="background:white; border:1px solid #e5e5e5; border-radius:8px; padding:16px 20px;">
+            ${html}
+          </div>
+        </div>`;
+      msgList.appendChild(div);
+      scrollToBottom();
+      return div;
+    }
+
+    function addUser(text) {
+      const div = document.createElement('div');
+      div.className = 'flex justify-end msg-in';
+      div.innerHTML = `<div style="background:#ff7f65; color:white; border-radius:8px; padding:12px 16px; max-width:80%; font-size:1.125rem; line-height:1.6;">${escHtml(text)}</div>`;
+      msgList.appendChild(div);
+      scrollToBottom();
+    }
+
+    function addUserPhoto(dataUrl) {
+      const div = document.createElement('div');
+      div.className = 'flex justify-end msg-in';
+      div.innerHTML = `<div style="border-radius:8px; overflow:hidden; border:1px solid #e5e5e5; max-width:200px;">
+        <img src="${dataUrl}" alt="업로드된 사진" style="width:100%; display:block;" />
+      </div>`;
+      msgList.appendChild(div);
+      scrollToBottom();
+    }
+
+    function addTyping() {
+      const div = document.createElement('div');
+      div.id = 'typing-indicator';
+      div.className = 'flex items-start gap-3';
+      div.innerHTML = `${AI_AVATAR}
+        <div style="background:white; border:1px solid #e5e5e5; border-radius:8px; padding:14px 16px; display:flex; align-items:center; gap:6px;">
+          <span class="td"></span><span class="td"></span><span class="td"></span>
+        </div>`;
+      msgList.appendChild(div);
+      scrollToBottom();
+    }
+
+    function removeTyping() {
+      const el = document.getElementById('typing-indicator');
+      if (el) el.remove();
+    }
+
+    function aiSay(html, delay = 1000) {
+      return new Promise(resolve => {
+        addTyping();
+        setTimeout(() => { removeTyping(); addAI(html); resolve(); }, delay);
+      });
+    }
+
+    /* ================================================================
+       퍼스널 컬러 분석 (canvas 픽셀 분석)
+    ================================================================ */
+    async function analyzePersonalColor(dataUrl) {
+      return new Promise(resolve => {
+        const img = new Image();
+        img.onload = () => {
+          const size = 150;
+          const scale = Math.min(1, size / Math.max(img.width, img.height));
+          const w = Math.floor(img.width * scale);
+          const h = Math.floor(img.height * scale);
+
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+
+          // 상단 55% 중앙 60% 영역 샘플링 (얼굴 영역)
+          const x1 = Math.floor(w * 0.20);
+          const y1 = Math.floor(h * 0.05);
+          const rw = Math.floor(w * 0.60);
+          const rh = Math.floor(h * 0.50);
+
+          let sumR = 0, sumG = 0, sumB = 0, count = 0;
+          try {
+            const d = ctx.getImageData(x1, y1, rw, rh).data;
+            for (let i = 0; i < d.length; i += 4) {
+              const r = d[i], g = d[i+1], b = d[i+2];
+              // 피부톤 필터: R 최고, 너무 어둡거나 밝지 않게
+              if (r > 80 && r < 240 && r > g && r >= b && (r - b) > 8 && g > 40) {
+                sumR += r; sumG += g; sumB += b; count++;
+              }
+            }
+          } catch(e) { resolve('summer'); return; }
+
+          if (count < 15) { resolve('summer'); return; }
+
+          const avgR = sumR / count;
+          const avgG = sumG / count;
+          const avgB = sumB / count;
+
+          // 웜/쿨: R-B 차이 비율이 클수록 웜톤 (황색기)
+          const warmScore = (avgR - avgB) / avgR;
+          // 밝기
+          const brightness = (avgR + avgG + avgB) / 3;
+
+          const isWarm   = warmScore > 0.21;
+          const isBright = brightness > 158;
+
+          if      (isWarm  && isBright)  resolve('spring');
+          else if (isWarm  && !isBright) resolve('autumn');
+          else if (!isWarm && isBright)  resolve('summer');
+          else                           resolve('winter');
+        };
+        img.onerror = () => resolve('summer');
+        img.src = dataUrl;
+      });
+    }
+
+    /* ================================================================
+       퍼스널 컬러 결과 카드 렌더링
+    ================================================================ */
+    function renderPcCard(pc) {
+      const cid = ++cardSeq;
+      const otherBgs = ALL_BG_OPTIONS.filter(b => !pc.recommend.find(r => r.id === b.id));
+
+      return `
+        <!-- 퍼스널 컬러 결과 -->
+        <div class="pc-${pc.type}" style="border-radius:8px; padding:16px; margin-bottom:16px; border:1px solid;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+            <span style="font-size:1.75rem; line-height:1;">${pc.emoji}</span>
+            <div style="flex:1;">
+              <p style="font-size:0.8rem; color:#999; margin:0 0 2px;">퍼스널 컬러 분석 결과</p>
+              <p style="font-size:1.25rem; font-weight:700; color:#1a1a1a; margin:0;">${escHtml(pc.season)}</p>
+            </div>
+            <span style="background:${pc.color}; color:white; font-size:0.7rem; font-weight:700; border-radius:4px; padding:3px 8px; flex-shrink:0;">AI 분석</span>
+          </div>
+          <p style="font-size:1rem; color:#555; line-height:1.6; margin:0;">${escHtml(pc.description)}</p>
+        </div>
+
+        <!-- 추천 배경 -->
+        <p style="font-size:1.125rem; font-weight:600; color:#1a1a1a; margin:0 0 4px;">AI 추천 배경 색상</p>
+        <p style="font-size:0.9rem; color:#999; margin:0 0 12px;">${escHtml(pc.tip)}</p>
+
+        <div style="display:flex; gap:8px; margin-bottom:16px;">
+          ${pc.recommend.map((bg, i) => `
+            <button onclick="window.selectBg('${bg.id}')"
+              class="pc-bg-btn np-btn np-btn-${i === 0 ? 'primary' : 'grey-stroke'}"
+              style="flex:1; font-size:1rem; position:relative; justify-content:center;">
+              <span style="width:20px; height:20px; border-radius:50%; flex-shrink:0; display:inline-block;
+                background:${bg.value}; ${bg.hasBorder ? 'border:1px solid rgba(255,255,255,0.6);' : ''}
+                ${i === 0 ? 'border:2px solid rgba(255,255,255,0.7);' : ''}"></span>
+              ${escHtml(bg.label)}
+              ${i === 0 ? `<span style="position:absolute; top:-8px; right:-4px; background:#ff7f65; color:white; font-size:0.6rem; font-weight:700; border-radius:999px; padding:2px 6px; white-space:nowrap;">추천</span>` : ''}
+            </button>
+          `).join('')}
+        </div>
+
+        <!-- 다른 배경 선택 -->
+        <button onclick="window.toggleOtherBg(${cid})"
+          style="background:none; border:none; cursor:pointer; font-size:0.9rem; color:#aaa; display:flex; align-items:center; gap:4px; padding:0;">
+          <svg id="chevron-${cid}" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform 0.2s;">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+          다른 배경 색상 선택하기
+        </button>
+        <div id="other-bg-${cid}" style="display:none; margin-top:12px;">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            ${otherBgs.map(bg => `
+              <button onclick="window.selectBg('${bg.id}')"
+                class="pc-bg-btn np-btn np-btn-sm np-btn-grey-stroke"
+                style="font-size:1rem; justify-content:flex-start; gap:10px;">
+                <span style="width:20px; height:20px; border-radius:50%; flex-shrink:0; display:inline-block;
+                  background:${bg.value}; ${bg.hasBorder ? 'border:1px solid #e5e5e5;' : ''}"></span>
+                ${escHtml(bg.label)}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    /* ================================================================
+       다른 배경 토글
+    ================================================================ */
+    window.toggleOtherBg = function(cid) {
+      const panel   = document.getElementById('other-bg-' + cid);
+      const chevron = document.getElementById('chevron-' + cid);
+      if (!panel) return;
+      const isOpen = panel.style.display !== 'none';
+      panel.style.display  = isOpen ? 'none' : 'block';
+      chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+    };
+
+    /* ================================================================
+       배경 선택 → 생성
+    ================================================================ */
+    window.selectBg = async function(bgId) {
+      if (chatState !== 'pc_result') return;
+      chatState = 'outfit_select';
+
+      selectedBg = getBgById(bgId);
+      document.querySelectorAll('.pc-bg-btn').forEach(btn => { btn.disabled = true; btn.style.opacity = '0.5'; });
+
+      addUser(selectedBg.label + ' 배경으로 선택했어요');
+
+      await aiSay(`
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4caf50" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <p style="font-size:1.125rem; font-weight:600; color:#1a1a1a; margin:0;">${escHtml(selectedBg.label)} 배경으로 설정했습니다.</p>
+        </div>
+        <p style="font-size:1.125rem; font-weight:600; color:#1a1a1a; margin:0 0 4px;">복장을 선택해 주세요.</p>
+        <p style="font-size:0.9rem; color:#999; margin:0 0 14px;">사진 속 복장을 자동으로 감지하거나, 정장으로 변환할 수 있어요.</p>
+        ${renderOutfitButtons()}
+      `, 900);
+    };
+
+    /* ================================================================
+       복장 선택 버튼 렌더링
+    ================================================================ */
+    function renderOutfitButtons() {
+      const options = [
+        { id: 'auto',  label: '자동 감지',  desc: '사진 그대로 사용',     icon: '🔍' },
+        { id: 'women', label: '여성 정장',   desc: '여성 정장으로 변환',   icon: '👔' },
+        { id: 'men',   label: '남성 정장',   desc: '남성 수트로 변환',     icon: '🕴' },
+      ];
+      return `
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          ${options.map(opt => `
+            <button onclick="window.selectOutfit('${opt.id}')"
+              class="outfit-btn np-btn np-btn-grey-stroke"
+              style="justify-content:flex-start; gap:12px; padding:14px 16px; height:auto;">
+              <span style="font-size:1.5rem; flex-shrink:0; line-height:1;">${opt.icon}</span>
+              <div style="text-align:left;">
+                <p style="font-size:1.125rem; font-weight:600; color:#1a1a1a; margin:0 0 2px;">${escHtml(opt.label)}</p>
+                <p style="font-size:0.875rem; color:#999; margin:0;">${escHtml(opt.desc)}</p>
+              </div>
+            </button>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    /* ================================================================
+       복장 선택 → 생성
+    ================================================================ */
+    window.selectOutfit = async function(outfitId) {
+      if (chatState !== 'outfit_select') return;
+      chatState = 'generating';
+
+      selectedOutfit = outfitId;
+      document.querySelectorAll('.outfit-btn').forEach(btn => { btn.disabled = true; btn.style.opacity = '0.5'; });
+
+      const outfitLabels = { auto: '자동 감지', women: '여성 정장', men: '남성 정장' };
+      addUser(outfitLabels[outfitId] + '으로 만들어 주세요');
+
+      await aiSay(`
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div class="np-spinner np-spinner-md" style="flex-shrink:0;"></div>
+          <div>
+            <p style="font-size:1.125rem; font-weight:600; color:#1a1a1a; margin:0 0 4px;">사진을 처리하는 중입니다...</p>
+            <p style="font-size:0.9rem; color:#999; margin:0;">배경 교체와 복장 변환을 적용하고 있어요.</p>
+          </div>
+        </div>
+      `, 1400);
+
+      addAI(`
+        <p style="font-size:1.125rem; font-weight:600; color:#1a1a1a; margin:0 0 12px;">증명사진을 생성하는 중입니다</p>
+        <div style="background:#f0f0f0; border-radius:999px; height:8px; overflow:hidden; margin-bottom:8px;">
+          <div class="progress-fill" style="height:100%; background:#ff7f65; border-radius:999px; width:5%;"></div>
+        </div>
+        <p style="font-size:0.9rem; color:#999; margin:0;">${escHtml(selectedBg.label)} 배경 · ${escHtml(outfitLabels[outfitId])} 적용 중...</p>
+      `);
+
+      try { generatedUrl = await generateIdPhoto(photoDataUrl, selectedBg.value, selectedOutfit); }
+      catch(e) { generatedUrl = photoDataUrl; }
+
+      await new Promise(r => setTimeout(r, 3400));
+      showResult();
+    };
+
+    /* ================================================================
+       증명사진 생성 (canvas) + 복장 오버레이
+    ================================================================ */
+    function generateIdPhoto(dataUrl, bgColor, outfitType) {
+      return new Promise(resolve => {
+        const img = new Image();
+        img.onload = () => {
+          const W = 300, H = 400;
+          const canvas = document.createElement('canvas');
+          canvas.width = W; canvas.height = H;
+          const ctx = canvas.getContext('2d');
+
+          // 배경 채우기
+          ctx.fillStyle = bgColor;
+          ctx.fillRect(0, 0, W, H);
+
+          // 3:4 비율 센터 크롭
+          const ratio = W / H;
+          const ir    = img.width / img.height;
+          let sx, sy, sw, sh;
+          if (ir > ratio) {
+            sh = img.height; sw = sh * ratio;
+            sx = (img.width - sw) / 2; sy = 0;
+          } else {
+            sw = img.width; sh = sw / ratio;
+            sx = 0; sy = img.height * 0.05;
+            if (sy + sh > img.height) sy = img.height - sh;
+            if (sy < 0) sy = 0;
+          }
+          ctx.drawImage(img, sx, sy, sw, sh, 0, 0, W, H);
+
+          // 복장 오버레이 적용
+          applyOutfitOverlay(ctx, W, H, outfitType || 'auto');
+
+          resolve(canvas.toDataURL('image/jpeg', 0.95));
+        };
+        img.onerror = () => resolve(dataUrl);
+        img.src = dataUrl;
+      });
+    }
+
+    /* ================================================================
+       복장 오버레이 (canvas 드로잉)
+    ================================================================ */
+    function applyOutfitOverlay(ctx, W, H, outfitType) {
+      if (outfitType === 'auto') return;
+
+      const suitY = H * 0.62; // 정장 시작 Y 위치
+
+      // 블렌딩 그라디언트 (자연스러운 경계)
+      const grad = ctx.createLinearGradient(0, suitY - 24, 0, suitY + 20);
+      grad.addColorStop(0, 'rgba(0,0,0,0)');
+      grad.addColorStop(1, outfitType === 'men' ? 'rgba(28,28,46,1)' : 'rgba(40,40,56,1)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, suitY - 24, W, 44);
+
+      if (outfitType === 'men') {
+        const SUIT = 'rgba(28,28,46,1)';
+
+        // 수트 몸통
+        ctx.fillStyle = SUIT;
+        ctx.fillRect(0, suitY + 20, W, H - (suitY + 20));
+
+        // 왼쪽 라펠
+        ctx.fillStyle = SUIT;
+        ctx.beginPath();
+        ctx.moveTo(W * 0.18, suitY + 10);
+        ctx.lineTo(W * 0.43, suitY + 10);
+        ctx.lineTo(W * 0.46, suitY + 55);
+        ctx.lineTo(W * 0.43, H);
+        ctx.lineTo(0, H);
+        ctx.closePath();
+        ctx.fill();
+
+        // 오른쪽 라펠
+        ctx.beginPath();
+        ctx.moveTo(W * 0.82, suitY + 10);
+        ctx.lineTo(W * 0.57, suitY + 10);
+        ctx.lineTo(W * 0.54, suitY + 55);
+        ctx.lineTo(W * 0.57, H);
+        ctx.lineTo(W, H);
+        ctx.closePath();
+        ctx.fill();
+
+        // 흰 셔츠 (중앙)
+        ctx.fillStyle = '#f0f0f0';
+        ctx.beginPath();
+        ctx.moveTo(W * 0.43, suitY + 10);
+        ctx.lineTo(W * 0.57, suitY + 10);
+        ctx.lineTo(W * 0.57, H);
+        ctx.lineTo(W * 0.43, H);
+        ctx.closePath();
+        ctx.fill();
+
+        // 넥타이
+        ctx.fillStyle = '#6b1a1a';
+        ctx.beginPath();
+        ctx.moveTo(W * 0.47, suitY + 14);
+        ctx.lineTo(W * 0.53, suitY + 14);
+        ctx.lineTo(W * 0.515, suitY + 90);
+        ctx.lineTo(W * 0.50, suitY + 100);
+        ctx.lineTo(W * 0.485, suitY + 90);
+        ctx.closePath();
+        ctx.fill();
+
+        // 넥타이 상단 매듭
+        ctx.fillStyle = '#7a1e1e';
+        ctx.beginPath();
+        ctx.moveTo(W * 0.46, suitY + 14);
+        ctx.lineTo(W * 0.54, suitY + 14);
+        ctx.lineTo(W * 0.52, suitY + 28);
+        ctx.lineTo(W * 0.48, suitY + 28);
+        ctx.closePath();
+        ctx.fill();
+
+      } else if (outfitType === 'women') {
+        const JACKET = 'rgba(40,40,56,1)';
+
+        // 재킷 몸통
+        ctx.fillStyle = JACKET;
+        ctx.fillRect(0, suitY + 20, W, H - (suitY + 20));
+
+        // 왼쪽 재킷
+        ctx.beginPath();
+        ctx.moveTo(W * 0.18, suitY + 10);
+        ctx.lineTo(W * 0.44, suitY + 10);
+        ctx.lineTo(W * 0.46, suitY + 44);
+        ctx.lineTo(W * 0.44, H);
+        ctx.lineTo(0, H);
+        ctx.closePath();
+        ctx.fill();
+
+        // 오른쪽 재킷
+        ctx.beginPath();
+        ctx.moveTo(W * 0.82, suitY + 10);
+        ctx.lineTo(W * 0.56, suitY + 10);
+        ctx.lineTo(W * 0.54, suitY + 44);
+        ctx.lineTo(W * 0.56, H);
+        ctx.lineTo(W, H);
+        ctx.closePath();
+        ctx.fill();
+
+        // 이너 (밝은 블라우스)
+        ctx.fillStyle = '#f8f8f0';
+        ctx.beginPath();
+        ctx.moveTo(W * 0.44, suitY + 10);
+        ctx.lineTo(W * 0.56, suitY + 10);
+        ctx.lineTo(W * 0.56, H);
+        ctx.lineTo(W * 0.44, H);
+        ctx.closePath();
+        ctx.fill();
+
+        // 왼쪽 라펠 (여성 재킷 라펠)
+        ctx.fillStyle = JACKET;
+        ctx.beginPath();
+        ctx.moveTo(W * 0.30, suitY + 12);
+        ctx.lineTo(W * 0.44, suitY + 12);
+        ctx.lineTo(W * 0.46, suitY + 46);
+        ctx.lineTo(W * 0.33, suitY + 38);
+        ctx.closePath();
+        ctx.fill();
+
+        // 오른쪽 라펠
+        ctx.beginPath();
+        ctx.moveTo(W * 0.70, suitY + 12);
+        ctx.lineTo(W * 0.56, suitY + 12);
+        ctx.lineTo(W * 0.54, suitY + 46);
+        ctx.lineTo(W * 0.67, suitY + 38);
+        ctx.closePath();
+        ctx.fill();
+      }
+    }
+
+    /* ================================================================
+       결과 표시
+    ================================================================ */
+    function showResult() {
+      chatState = 'done';
+      uploadBtn.style.pointerEvents = 'none';
+      uploadBtn.style.opacity = '0.4';
+
+      addAI(`
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+          <div style="width:28px; height:28px; border-radius:50%; background:#e8f5e9; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4caf50" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <p style="font-size:1.25rem; font-weight:700; color:#1a1a1a; margin:0;">증명사진이 완성되었습니다!</p>
+        </div>
+
+        <!-- 사진 미리보기 -->
+        <div style="display:flex; justify-content:center; margin-bottom:20px;">
+          <div class="id-photo-frame">
+            <div class="photo-print">
+              <img src="${generatedUrl}" alt="AI 생성 증명사진"
+                style="width:120px; height:160px; object-fit:cover; display:block;" />
+            </div>
+            <p style="font-size:11px; color:#999; text-align:center; margin:0;">3×4cm 증명사진</p>
+          </div>
+        </div>
+
+        <!-- 적용된 설정 요약 -->
+        <div style="background:#f5f5f5; border-radius:8px; padding:12px 14px; margin-bottom:16px; display:flex; flex-direction:column; gap:6px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="width:18px; height:18px; border-radius:50%; flex-shrink:0; display:inline-block;
+              background:${selectedBg.value}; ${selectedBg.hasBorder ? 'border:1px solid #ddd;' : ''}"></span>
+            <span style="font-size:0.9rem; color:#555;">배경 <strong style="color:#1a1a1a;">${escHtml(selectedBg.label)}</strong>
+              ${pcResult ? `· <span style="color:${pcResult.color}">${escHtml(pcResult.emoji)} ${escHtml(pcResult.season)}</span> 최적화` : ''}
+            </span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:0.9rem;">${{'auto':'🔍','women':'👔','men':'🕴'}[selectedOutfit]}</span>
+            <span style="font-size:0.9rem; color:#555;">복장 <strong style="color:#1a1a1a;">${{'auto':'자동 감지','women':'여성 정장','men':'남성 정장'}[selectedOutfit]}</strong></span>
+          </div>
+        </div>
+
+        <!-- 다운로드 -->
+        <p style="font-size:0.9rem; color:#666; margin:0 0 10px;">다운로드할 형식을 선택해 주세요.</p>
+        <div style="display:flex; gap:8px; margin-bottom:16px;">
+          <button onclick="window.downloadSingle()" class="np-btn np-btn-sm np-btn-primary" style="flex:1;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            1장 저장
+          </button>
+          <button onclick="window.downloadSheet()" class="np-btn np-btn-sm np-btn-secondary" style="flex:1;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/>
+              <line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/>
+            </svg>
+            6장 인화용
+          </button>
+        </div>
+
+        <hr style="border:none; border-top:1px solid #f0f0f0; margin-bottom:14px;" />
+
+        <div style="display:flex; gap:8px;">
+          <button onclick="window.changeBg()" class="np-btn np-btn-sm np-btn-grey-stroke" style="flex:1;">배경 다시 선택</button>
+          <button onclick="window.restartAll()" class="np-btn np-btn-sm np-btn-ghost" style="flex:1;">새 사진으로 시작</button>
+        </div>
+      `);
+
+      showToast('증명사진이 완성됐어요! 저장 버튼을 눌러 다운로드하세요.');
+    }
+
+    /* ================================================================
+       다운로드
+    ================================================================ */
+    window.downloadSingle = function() {
+      const a = document.createElement('a');
+      a.download = 'nextpartner_증명사진.jpg';
+      a.href = generatedUrl; a.click();
+      showToast('사진을 저장했습니다!');
+    };
+
+    window.downloadSheet = function() {
+      const canvas = document.createElement('canvas');
+      const COLS = 2, ROWS = 3, W = 300, H = 400, GAP = 16, PAD = 24;
+      canvas.width  = COLS * W + (COLS - 1) * GAP + PAD * 2;
+      canvas.height = ROWS * H + (ROWS - 1) * GAP + PAD * 2;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const img = new Image();
+      img.onload = () => {
+        for (let r = 0; r < ROWS; r++)
+          for (let c = 0; c < COLS; c++)
+            ctx.drawImage(img, PAD + c * (W + GAP), PAD + r * (H + GAP), W, H);
+        const a = document.createElement('a');
+        a.download = 'nextpartner_증명사진_6장.jpg';
+        a.href = canvas.toDataURL('image/jpeg', 0.95); a.click();
+        showToast('6장 인화용 사진을 저장했습니다!');
+      };
+      img.src = generatedUrl;
+    };
+
+    /* ================================================================
+       배경 재선택
+    ================================================================ */
+    window.changeBg = async function() {
+      chatState = 'pc_result';
+      uploadBtn.style.pointerEvents = ''; uploadBtn.style.opacity = '';
+      await aiSay(`
+        <p style="font-size:1.125rem; font-weight:600; color:#1a1a1a; margin:0 0 12px;">배경 색상을 다시 선택해 주세요.</p>
+        ${pcResult ? renderPcCard(pcResult) : ''}
+      `, 700);
+    };
+
+    /* ================================================================
+       전체 재시작
+    ================================================================ */
+    window.restartAll = function() {
+      photoDataUrl = null; pcResult = null; selectedBg = null;
+      selectedOutfit = 'auto'; generatedUrl = null;
+      chatState = 'waiting_photo';
+      msgList.innerHTML = '';
+      photoInput.value = '';
+      uploadBtn.style.pointerEvents = ''; uploadBtn.style.opacity = '';
+      uploadBtn.classList.remove('has-photo');
+      aiSay(`
+        <p style="font-size:1.125rem; font-weight:600; color:#1a1a1a; margin:0 0 8px;">새 사진으로 다시 시작합니다.</p>
+        <p style="font-size:1.125rem; color:#666; margin:0;">아래 📷 버튼을 눌러 새 사진을 업로드해 주세요!</p>
+      `, 500);
+    };
+
+    /* ================================================================
+       사진 업로드 → 퍼스널 컬러 자동 분석
+    ================================================================ */
+    function handlePhotoUpload(file) {
+      if (!file) return;
+      if (!file.type.startsWith('image/')) { showToast('이미지 파일만 업로드 가능합니다. (JPG, PNG 등)'); return; }
+      if (file.size > 15 * 1024 * 1024) { showToast('15MB 이하 파일을 올려주세요.'); return; }
+
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        photoDataUrl = e.target.result;
+        uploadBtn.classList.add('has-photo');
+        addUserPhoto(photoDataUrl);
+
+        // 퍼스널 컬러 분석 중 메시지
+        await aiSay(`
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="np-spinner np-spinner-md" style="flex-shrink:0;"></div>
+            <div>
+              <p style="font-size:1.125rem; font-weight:600; color:#1a1a1a; margin:0 0 4px;">퍼스널 컬러를 분석하는 중입니다...</p>
+              <p style="font-size:0.9rem; color:#999; margin:0;">사진에서 피부톤을 측정하고 있어요. 잠시만 기다려 주세요.</p>
+            </div>
+          </div>
+        `, 600);
+
+        // 실제 canvas 분석
+        chatState = 'analyzing';
+        const pcType = await analyzePersonalColor(photoDataUrl);
+        pcResult = PC_DATA[pcType] || PC_DATA.summer;
+
+        // 퍼스널 컬러 결과 + 배경 추천 카드
+        await aiSay(`
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+            <div style="width:28px; height:28px; border-radius:50%; background:#e8f5e9; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4caf50" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <p style="font-size:1.125rem; font-weight:700; color:#1a1a1a; margin:0;">분석이 완료되었습니다!</p>
+          </div>
+          ${renderPcCard(pcResult)}
+        `, 1800);
+
+        chatState = 'pc_result';
+        lucide.createIcons(); // 새로 주입된 아이콘 초기화
+      };
+      reader.readAsDataURL(file);
+      photoInput.value = '';
+    }
+
+    /* ================================================================
+       텍스트 메시지 전송
+    ================================================================ */
+    function sendMessage() {
+      const text = userInput.value.trim();
+      if (!text) return;
+      addUser(text);
+      userInput.value = ''; userInput.style.height = ''; sendBtn.disabled = true;
+
+      const replies = {
+        'init':           `<p style="font-size:1.125rem; color:#666;">아래 📷 버튼을 눌러 사진을 업로드해 주세요!</p>`,
+        'waiting_photo':  `<p style="font-size:1.125rem; color:#666;">아래 📷 버튼을 눌러 사진을 업로드해 주세요!</p>`,
+        'pc_result':      `<p style="font-size:1.125rem; color:#666;">위의 버튼에서 배경 색상을 선택해 주세요!</p>`,
+        'outfit_select':  `<p style="font-size:1.125rem; color:#666;">위의 버튼에서 복장을 선택해 주세요!</p>`,
+        'generating':     `<div style="display:flex;align-items:center;gap:10px;"><div class="np-spinner np-spinner-md"></div><p style="font-size:1.125rem;color:#666;margin:0;">생성 중이에요, 곧 완성돼요!</p></div>`,
+        'done':           `<p style="font-size:1.125rem; color:#666;"><strong style="color:#1a1a1a;">새 사진으로 시작</strong> 버튼을 눌러 다시 시작하세요!</p>`,
+      };
+      const html = replies[chatState] || replies['waiting_photo'];
+      aiSay(html, 700);
+    }
+
+    /* ================================================================
+       입력 이벤트
+    ================================================================ */
+    userInput.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 140) + 'px';
+      sendBtn.disabled = this.value.trim().length === 0;
+    });
+    userInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (!sendBtn.disabled) sendMessage(); }
+    });
+    sendBtn.addEventListener('click', sendMessage);
+    photoInput.addEventListener('change', function() { if (this.files[0]) handlePhotoUpload(this.files[0]); });
+
+    /* ================================================================
+       대화 시작
+    ================================================================ */
+    async function startConversation() {
+      chatState = 'init';
+
+      await aiSay(`
+        <p style="font-size:1.5rem; font-weight:700; color:#1a1a1a; margin:0 0 12px;">안녕하세요! 👋</p>
+        <p style="font-size:1.125rem; color:#666; line-height:1.7; margin:0 0 16px;">
+          <strong style="color:#ff7f65;">AI 증명사진</strong> 서비스입니다.<br/>
+          사진을 올리면 <strong style="color:#1a1a1a;">퍼스널 컬러를 자동 분석</strong>하여<br/>
+          피부톤에 꼭 맞는 배경색을 추천해 드려요.
+        </p>
+        <div style="background:#f5f5f5; border-radius:8px; padding:14px 16px; display:flex; gap:12px; align-items:flex-start;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff9800" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:2px;">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <div>
+            <p style="font-size:1rem; font-weight:600; color:#333; margin:0 0 6px;">더 정확한 분석을 위한 팁</p>
+            <ul style="font-size:1rem; color:#666; line-height:1.8; list-style:none; padding:0; margin:0;">
+              <li>• 정면을 바라보는 사진이 좋아요</li>
+              <li>• 밝은 환경에서 찍은 사진을 올려주세요</li>
+              <li>• 얼굴이 선명하게 보이는 사진이면 더 좋아요</li>
+            </ul>
+          </div>
+        </div>
+      `, 800);
+
+      await aiSay(`
+        <p style="font-size:1.125rem; color:#666; line-height:1.6; margin:0;">
+          아래 <strong style="color:#1a1a1a;">📷 카메라 버튼</strong>을 눌러 사진을 업로드해 주세요!
+        </p>
+      `, 600);
+
+      chatState = 'waiting_photo';
+    }
+
+    startConversation();
+  </script>
+
+  <!-- Lucide 아이콘 초기화 -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => lucide.createIcons());
+  </script>
+
+</body>
+</html>

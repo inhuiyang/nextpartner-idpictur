@@ -1,0 +1,14 @@
+{
+  "name": "nextpartner-idpictur",
+  "version": "1.0.0",
+  "description": "넥스트파트너 AI 증명사진 생성 페이지",
+  "scripts": {
+    "dev": "npx tailwindcss -i ./src/index.css -o ./dist/index.css --watch",
+    "build": "npx tailwindcss -i ./src/index.css -o ./dist/index.css --minify"
+  },
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "tailwindcss": "^3.4.19"
+  }
+}
